@@ -125,7 +125,7 @@ struct SomeView: View {
 4. Replace NavigationView with RoutedNavigationView 
 
 ```swift
-struct SwiftUITodoListApp: App {
+struct TestProductsApp: App {
     
     @StateObject private var router = ProductsRouter()
     
@@ -141,6 +141,36 @@ struct SwiftUITodoListApp: App {
     }
  }
  ```
+ 
+ 5. Replace NavigationLink with RouteLink (Optional)
+
+```swift
+struct ProductsView: View {
+    @State private var products: [Product] = Product.previewProducts
+    @State private var selection: Product?
+    
+    var body: some View {
+        List {
+            ForEach(products, id: \.self) { product in
+                // If no dynamic view resolution is required, use NavigationLink.
+                // It will work normally when placed within RoutedNavigationViews.
+                NavigationLink(tag: product, selection: $selection) {
+                    ProductDetailsView(productId: product.id)
+                } label: {
+                    Text(product.title)
+                }
+                
+                // If dynamic view resolution is required, then use RouteLink
+                // The view can the be dynamically resolved at runtime by using
+                // the provided View Composer.
+                RouteLink(tag: product, selection: $selection, to: ProductRoutes.selectedProduct(productId: product.id)) {
+                    Text(product.title)
+                }
+            }
+        }
+    }
+}
+```
 
 ## 🧩 Framework Overview
 
