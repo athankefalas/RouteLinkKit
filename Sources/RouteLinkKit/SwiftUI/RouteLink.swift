@@ -26,7 +26,7 @@ import SwiftUI
 /// A view that controls a routed navigation presentation, managed by the router available in the current `RoutedNavigationView` context.
 public struct RouteLink<Route: RouteRepresenting, Label: View>: View {
 
-    @Environment(\.router) var routing
+    @Environment(\.routing) var routing
 
     private let label: () -> Label
     private let navigationLink: (AnyRouter) -> NavigationLink<Label, AnyView>

@@ -39,7 +39,7 @@ public struct RoutingEnvironmentKey: EnvironmentKey {
 public extension EnvironmentValues {
     
     /// The key for accessing the routing environment value.
-    var router: RoutingEnvironment {
+    var routing: RoutingEnvironment {
         get { self[RoutingEnvironmentKey.self] }
         set { self[RoutingEnvironmentKey.self] = newValue }
     }
@@ -51,6 +51,6 @@ public extension View {
     /// - Parameter router: The currently active router.
     /// - Returns: A view that has the given value set in its environment.
     func routing(with router: AnyRouter?) -> some View {
-        environment(\.router, .init(router: router))
+        environment(\.routing, .init(router: router))
     }
 }
