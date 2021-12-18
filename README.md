@@ -9,7 +9,7 @@ RouteLinkKit has the following features:
 * Supports vanilla SwiftUI lifecycle apps.
 * Supports native NavigationLinks and state driven navigation.
 * Supports automatic master-detail and sidebar setup done by SwiftUI.
-* Mixing declarative and programmatic (imperative) navigation schemes.
+* Supports mixing declarative and programmatic (imperative) navigation schemes.
 * Uses UIKit based navigation, and exposes the navigation controller in use.
 
 **Limitations:**
@@ -24,21 +24,110 @@ As a result, it is provided as is and without ANY warranty of any kind.
 
 [TOC]
 
-## ⬇️ Instalation
+## 📦 Instalation
 
-### 📦 Swift Package
+### Swift Package
 
 You may add RouteLinkKit as a Swift Package dependency using Xcode 11.0 or later, by selecting `File > Swift Packages > Add Package Dependency...` or `File > Add packages...` in Xcode 13.0 and later, and adding the url below:
 
 `https://github.com/athankefalas/RouteLinkKit.git`
 
-### 💪 Manually 
+### Manually 
 
 You may also install this framework manually by downloading the `RouteLinkKit` project and including it in your project.
 
 ## ⚡️ Quick setup
 
-TDB
+This section will contain an example setup, for a app that displays a list of products.
+
+1. Define a set of Routes
+
+```swift
+enum ProductRoutes: RouteRepresenting {
+    case productsList
+    case selectedProduct(productId: Int)
+    case viewingProductDescription(productId: Int)
+}
+```
+
+Each route must be uniquely identifiable by a view composer by using it's hash value within a specific navigation stack.
+
+2. Define a ViewComposer
+
+```swift
+class ProductsViewComposer: ViewComposer {
+    
+    func composeView<Route>(for route: Route) -> AnyView where Route : RouteRepresenting {
+        guard let productsRoute = route as? ProductRoutes else {
+            assertionFailure("ProductsViewComposer: Failed to compose a view for route '\(route)' of type '\(type(of: route))'.")
+            return AnyView( EmptyView() )
+        }
+        
+        switch route {
+        case .productsList:
+            return AnyView( ProductsView() )
+        case .selectedProduct(productId: let productId):
+            return AnyView( ProductDetailsView(productId: productId) )
+        case .viewingProductDescription(productId: let productId):
+            return AnyView( ProductDescriptionView(productId: productId) )
+        }
+    }
+}
+```
+
+The view composer must know how to compose and create new views for each of the routes it supports.
+
+3. Create a router
+
+``` swift
+class ProductsRouter: Router {
+    let navigationController = UIRoutingNavigationController()
+    let routeViewComposer: ViewComposer = ProductsViewComposer()
+    
+    let rootRoute = ProductRoutes.productsList
+}
+```
+
+The router is injected in the environment values of all views that are descendants of a RoutedNavigationView and can be used in the following way:
+
+```swift
+
+struct SomeView: View {
+
+    @Environment(\.routing) var routing: RoutingEnvironment
+
+    var body: some View { ..... }
+
+    func popToRoot() {
+        routing.router?.dismissToRoot(animated: true)
+    }
+
+    func showTrail() {
+        routing.router?.navigationController.setViewControllers([...], animated: true)
+    }
+}
+
+```
+
+4. Replace NavigationView with RoutedNavigationView 
+
+```swift
+struct SwiftUITodoListApp: App {
+    
+    @StateObject private var router = ProductsRouter()
+    
+    var body: some Scene {
+        WindowGroup {
+            // Replace:
+            NavigationView {
+              ProductsView()
+            }
+            // With:
+            RoutedNavigationView(using: $router)
+        }
+    }
+ }
+ ```
 
 ## 🧩 Framework Overview
 
