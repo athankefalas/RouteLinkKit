@@ -99,10 +99,23 @@ struct SomeView: View {
     var body: some View { ..... }
 
     func popToRoot() {
+        // Use common methods
         routing.router?.dismissToRoot(animated: true)
     }
-
+    
     func showTrail() {
+        guard let router = routing.router as? ProductsRouter else {
+            return
+        }
+        
+        // Use common Route-dependant methods
+        routing.router?.dismiss(to: MyRoutes.root)
+        routing.router?.show(route: MyRoutes.details, animated: false)
+        routing.router?.show(trail: [MyRoutes.root, .details, .edit])
+    }
+
+    func showTrailCustom() {
+        // Dig down to UIKit to provide more custom functionality
         routing.router?.navigationController.setViewControllers([...], animated: true)
     }
 }
