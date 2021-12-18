@@ -36,7 +36,6 @@ open class UIRoutingHostingController<RootView: View, Route: Hashable>: UIHostin
     public init(presenting route: Route, content contentView: RootView) {
         self.route = route
         super.init(rootView: contentView)
-        additionalSafeAreaInsets = .zero
     }
     
     @MainActor @objc required dynamic public init?(coder aDecoder: NSCoder) {
@@ -44,8 +43,8 @@ open class UIRoutingHostingController<RootView: View, Route: Hashable>: UIHostin
     }
     
     public func isPresenting<SomeRoute>(route: SomeRoute) -> Bool where SomeRoute : RouteRepresenting {
-        guard route is Route,
-              let presentedRoute = self.route else {
+        guard let presentedRoute = self.route,
+              route is Route else {
                   return false
               }
         

@@ -23,6 +23,7 @@
 import Foundation
 
 public protocol Routing: AnyObject {
+    
     /// Restart the current navigation stack by destroying all views including the root view.
     /// - Parameter animated: Transtion animation flag
     func restart(animated: Bool)

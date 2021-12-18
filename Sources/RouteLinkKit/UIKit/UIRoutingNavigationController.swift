@@ -28,6 +28,7 @@ open class UIRoutingNavigationController: UINavigationController, AnyRoutingView
 
     open override func viewDidLoad() {
         super.viewDidLoad()
+        // Config to match SwiftUI NavigationView behaviour
         navigationBar.prefersLargeTitles = true
     }
     
@@ -41,17 +42,18 @@ open class UIRoutingNavigationController: UINavigationController, AnyRoutingView
     ///Use this method to update or replace the current view controller stack without pushing or popping each controller explicitly. In addition, this method lets you update the set of controllers without animating the changes, which might be appropriate at launch time when you want to return the navigation controller to a previous state.
     /// If animations are enabled, this method decides which type of transition to perform based on whether the last item in the items array is already in the navigation stack. If the view controller is currently in the stack, but is not the topmost item, this method uses a pop transition; if it is the topmost item, no transition is performed. If the view controller is not on the stack, this method uses a push transition. Only one transition is performed, but when that transition finishes, the entire contents of the stack are replaced with the new view controllers. For example, if controllers A, B, and C are on the stack and you set controllers D, A, and B, this method uses a pop transition and the resulting stack contains the controllers D, A, and B.
     open override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
-        guard !self.viewControllers.isEmpty else {
-            super.setViewControllers(viewControllers, animated: animated)
-            return
+        // If there are any view controllers presented, then
+        if !self.viewControllers.isEmpty {
+            // Silently dismiss all previously displayed view controllers to deactivate active nav links
+            popToRootViewController(animated: false)
         }
-        
-        // Silently dismiss all previously displayed view controllers to deactivate active nav links
-        popToRootViewController(animated: false)
+       
         super.setViewControllers(viewControllers, animated: animated)
     }
     
     public func isPresenting<SomeRoute>(route: SomeRoute) -> Bool where SomeRoute : RouteRepresenting {
+        // The route this view controller is presenting is equal to the one
+        // presented by the top view controller
         guard let topViewController = viewControllers.last as? AnyRoutingViewController else {
             return false
         }

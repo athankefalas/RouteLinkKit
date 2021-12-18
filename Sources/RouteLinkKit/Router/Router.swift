@@ -124,15 +124,14 @@ public extension Router {
         var createNewViewControllers = false
         
         for (index, route) in path.enumerated() {
+            let isIndexValidInExistingViewControllers = existingViewControllers.indices.contains(index)
             
             guard !createNewViewControllers,
-                  index >= existingViewControllers.startIndex,
-                  index < existingViewControllers.endIndex,
-                  let routableViewController = existingViewControllers[index] as? AnyRoutingViewController,
-                  routableViewController.isPresenting(route: route) else {
+                  isIndexValidInExistingViewControllers,
+                  isRoute(route, presentedBy: existingViewControllers[index]) else {
                       
-                      let newViewController = viewController(for: route)
-                      viewControllers.append(newViewController)
+                      let viewController = viewController(for: route)
+                      viewControllers.append(viewController)
                       
                       createNewViewControllers = true
                       
@@ -142,6 +141,7 @@ public extension Router {
             viewControllers.append(existingViewControllers[index])
         }
         
+        // If nothing changed in the navigation stack, return
         guard viewControllers.hashValue != navigationController.hashValue else {
             return
         }
@@ -149,8 +149,16 @@ public extension Router {
         navigationController.setViewControllers(viewControllers, animated: animated)
     }
     
+    private func isRoute(_ route: Route, presentedBy viewController: UIViewController) -> Bool {
+        guard let routingViewController = viewController as? AnyRoutingViewController else {
+            return false
+        }
+        
+        return routingViewController.isPresenting(route: route)
+    }
+    
     private func viewController(for route: Route) -> UIViewController {
-        let routeView = self.routeViewComposer.composeView(for: route)
+        let routeView = routeViewComposer.composeView(for: route)
         return UIRoutingHostingController(presenting: route, content: routeView)
     }
 }

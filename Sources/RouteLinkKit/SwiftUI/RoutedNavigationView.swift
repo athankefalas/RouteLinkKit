@@ -28,7 +28,8 @@ import SwiftUI
 public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
     
     private struct UIKitRoutedContent: UIViewControllerRepresentable {
-        private let navigationController: UINavigationController
+        
+        private let navigationController: UIRoutingNavigationController
         
         init(router: Router) {
             self.navigationController = router.navigationController
@@ -46,11 +47,11 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
             self.navigationController.viewControllers = [rootViewController]
         }
         
-        func makeUIViewController(context: Context) -> UINavigationController {
+        func makeUIViewController(context: Context) -> UIRoutingNavigationController {
             return navigationController
         }
         
-        func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
+        func updateUIViewController(_ uiViewController: UIRoutingNavigationController, context: Context) {}
     }
     
     @Binding private var router: Router
@@ -67,7 +68,7 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
                 .ignoresSafeArea()
                 .routing(with: router)
         } else {
-            // Fallback on earlier versions
+            // Fallback, on iOS 13.0
             UIKitRoutedContent(router: router)
                 .edgesIgnoringSafeArea(.all)
                 .routing(with: router)
