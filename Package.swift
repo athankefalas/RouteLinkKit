@@ -3,6 +3,8 @@
 
 import PackageDescription
 
+// RouteLinkKit-version: 0.8
+
 let package = Package(
     name: "RouteLinkKit",
     platforms: [
