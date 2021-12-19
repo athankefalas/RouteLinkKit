@@ -203,8 +203,8 @@ struct ProductsView: View {
                     Text(product.title)
                 }
                 
-                // If dynamic view resolution is required, then use RouteLink
-                // The view can the be dynamically resolved at runtime by using
+                // If dynamic view resolution is required, then use RouteLink.
+                // The view can then be dynamically resolved at runtime by using
                 // the provided View Composer.
                 RouteLink(tag: product, selection: $selection, to: ProductRoutes.selectedProduct(productId: product.id)) {
                     Text(product.title)
@@ -217,9 +217,9 @@ struct ProductsView: View {
 
 ## 🧩 Extension Points
 
-The RouteLinkKit framework offers a possible extension point that can help to modify the behaviour of the UIKit UINavigationController. 
-The class used in RouteLinkKit is a subclass, specifically configured to be used with SwiftUI called `UIRoutingNavigationController` and
-it's default behaviour can be modified by subclassing.
+The RouteLinkKit framework offers a possible extension point, that can help to modify the behaviour of the underlying UIKit UINavigationController. 
+The class used in RouteLinkKit is a subclass of UINavigationController, specifically configured to be used with SwiftUI called `UIRoutingNavigationController` and
+it's default behaviour can be easily modified by subclassing.
 
-If more custom behaviour is required you can duplicate and modify the RoutedNavigationLink and RouteLink views which only provide the 
+If more custom behaviour is required you can duplicate and modify the RoutedNavigationLink and RouteLink views, which by default only provide the 
 functionality provided natively by SwiftUI.
