@@ -3,6 +3,15 @@
 A lightweight iOS mini framework that enables programmatic navigation with SwiftUI. 
 RouteLinkKit is fully compatible with native NavigationLinks, while also supporting features available when using UINavigationController.
 
+[TOC]
+
+## ⏱ Version History
+
+| Version | Changes                |
+|---------|------------------------|
+| 0.8     | First version.         |
+
+
 ## 🛠 Features
 
 RouteLinkKit has the following features:
@@ -15,14 +24,14 @@ RouteLinkKit has the following features:
 **Limitations:**
 * Uses UIKit based navigation, which limits any product to work only on platforms that support UIKit.
 * Minor set up and configuration may be required.
+* All routes managed by a specific must be of the same type. 
 
 ### ❗️Disclaimer
 
 This mini framework is simply a proof of concept, and has only been tested with iOS and iPadOS, using the SwiftUI App lifecycle.
-If you plan to use this framework, please do an extensive round of testing before commiting to it.
 As a result, it is provided as is and without ANY warranty of any kind.
+If you plan to use this framework, especially in producion code, please do a round of testing before commiting to it.
 
-[TOC]
 
 ## 📦 Instalation
 
@@ -36,11 +45,14 @@ You may add RouteLinkKit as a Swift Package dependency using Xcode 11.0 or later
 
 You may also install this framework manually by downloading the `RouteLinkKit` project and including it in your project.
 
-## ⚡️ Quick setup
+## ⚡️ Quick Setup
 
-This section will contain an example setup, for a app that displays a list of products.
+This section will contain an example setup, for a app that displays a list of products and their details.
 
-1. Define a set of Routes
+### 1. Define a set of Routes
+
+A route is a type that can represent the routes available in a specific navigation hierarchy. Each route must be uniquely identifiable by it's hash value.
+To define a route you can create an `enum`, `struct` or `class` and conform to the `RouteRepresenting` protocol. In the context of the test products app we may define the available routes as the `enum` below:
 
 ```swift
 enum ProductRoutes: RouteRepresenting {
@@ -50,9 +62,11 @@ enum ProductRoutes: RouteRepresenting {
 }
 ```
 
-Each route must be uniquely identifiable by a view composer by using it's hash value within a specific navigation stack.
 
-2. Define a ViewComposer
+### 2. Define a ViewComposer
+
+A view composer is a type that accepts a route and composes a view to visually represent that specific route. The view composer must know how to compose and create new views for each of the routes it supports. To define a view composer create a `class` and conform to the `ViewComposer` protocol. The only requirement of the protocol is to define a function that accpets a generic route and returns a type-erased view. If you want to dynamically compose views at runtime based onthe current context of your app you may do it in the view composer.
+
 
 ```swift
 class ProductsViewComposer: ViewComposer {
@@ -75,9 +89,9 @@ class ProductsViewComposer: ViewComposer {
 }
 ```
 
-The view composer must know how to compose and create new views for each of the routes it supports.
+### 3. Create a router
 
-3. Create a router
+A router is a type that can be used to manage and perform programmatic navigation. The router holds a reference to the UIKit navigation controller that is currently in use and the view composer for the navigation hierarchy it manages. Finally, a router also contains a property that defines it's root route. The type of the root route is assumed to be the base type used for all routes in the navigation hierarchy and must conform to the `RouteRepresenting` route.
 
 ``` swift
 class ProductsRouter: Router {
@@ -87,8 +101,9 @@ class ProductsRouter: Router {
     let rootRoute = ProductRoutes.productsList
 }
 ```
+#### 3.1 Injecting Routers in Views
 
-The router is injected in the environment values of all views that are descendants of a RoutedNavigationView and can be used in the following way:
+The router is also injected in the environment values of all views that are descendants of a `RoutedNavigationView` and can be used in the following way:
 
 ```swift
 
@@ -109,20 +124,43 @@ struct SomeView: View {
         }
         
         // Use common Route-dependant methods
-        routing.router?.dismiss(to: MyRoutes.root)
-        routing.router?.show(route: MyRoutes.details, animated: false)
-        routing.router?.show(trail: [MyRoutes.root, .details, .edit])
+        routing.router?.dismiss(to: .productsList)
+        routing.router?.show(route: .productsList, animated: false)
+        routing.router?.show(trail: [.productsList, .selectedProduct(productId:0), .viewingProductDescription(productId:0)])
     }
 
     func showTrailCustom() {
-        // Dig down to UIKit to provide more custom functionality
+        // Drop down to UIKit to provide more custom functionality
         routing.router?.navigationController.setViewControllers([...], animated: true)
     }
 }
 
 ```
 
-4. Replace NavigationView with RoutedNavigationView 
+#### 3.2 Router API
+
+As mentioned above routers came with common navigation functions built-in, even though you can still provide your own by extensions or by using the navigation controller instance if needed. The functions that are already implemented in routers are the following:
+
+|                   Function                   |                       Description                     |
+|----------------------------------------------|-------------------------------------------------------|
+| dismiss(animated: Bool)                      | Dismiss the top view in the current navigation stack. |
+| dismissToRoot(animated: Bool)                | Dismiss all the views in the current navigation stack, until reaching the root view. |
+| dismiss(to route: Route, animated: Bool)     | Dismiss the top views in the current navigation stack, until reaching the first instance of the specified route. |
+| dismiss(before route: Route, animated: Bool) | Dismiss the top views in the current navigation stack, until reaching the view just before the specified route. |
+| restart(animated: Bool)                      | Restart the current navigation stack by destroying all views, and restarts with a new instance of the root view.| 
+| show(route: Route, animated: Bool)           | Shows a new view for the specified route at the top of the current navigation stack. |
+| present(route: Route, animated: Bool)        | Presents a new view modally for the specified route at the top of the current navigation stack.|
+| show(trail path: [Route], animated: Bool)    | Shows a new trail of routes, replacing the current navigation stack. |
+
+
+
+
+### 4. Replace NavigationView with RoutedNavigationView 
+
+One of the two SwiftUI components of RouteLinkKit is `RoutedNavigationView` that simply replaces the native NavigationView
+with a custom implementation that uses a `UINavigationController` subclass for navigation and to provide the navigation bar.
+The `RoutedNavigationView` behaves the same as the native `NavigationView` and can even perform native navigation links if needed.
+The main difference is that the content of a routed navigation view is automatically created by the router.
 
 ```swift
 struct TestProductsApp: App {
@@ -142,7 +180,12 @@ struct TestProductsApp: App {
  }
  ```
  
- 5. Replace NavigationLink with RouteLink (Optional)
+ ### 5. Replace NavigationLink with RouteLink (Optional)
+
+In cases where the destination of navigation links needs to be resolved dynamically at runtime, based on the current context of your app,
+use a `RouteLink` instead of a `NavigationLink`. For any dynamic route you require create the appropriate view in the view composer. The way 
+that `RouteLink` is implemented internally uses the native `NavigationLink` with the main difference between the two being that `RouteLink`
+doesn't require that the destination to be defined at compile time.
 
 ```swift
 struct ProductsView: View {
@@ -172,35 +215,11 @@ struct ProductsView: View {
 }
 ```
 
-## 🧩 Framework Overview
+## 🧩 Extension Points
 
-The framework has 3 main components that are used to perform programmatic navigation:
-* Route - A uniquely identifiable representation of a navigation route. A series of routes in a navigation stack, is referred to as a trail.
-* ViewComposer - A type that can compose views for a given route.
-* Router - A type that retains a reference to the underlying UINavigationController, the ViewComposer and has a preferred root route. Each navigation stack has a single router.
+The RouteLinkKit framework offers a possible extension point that can help to modify the behaviour of the UIKit UINavigationController. 
+The class used in RouteLinkKit is a subclass, specifically configured to be used with SwiftUI called `UIRoutingNavigationController` and
+it's default behaviour can be modified by subclassing.
 
-
-### Route
-
-TODO
-
-### ViewComposer
-
-TODO
-
-### Router
-
-TODO
-
-### RoutedNavigationView
-
-TODO
-
-### RouteLink
-
-TODO
-
-## Extension Points
-
-TODO
-
+If more custom behaviour is required you can duplicate and modify the RoutedNavigationLink and RouteLink views which only provide the 
+functionality provided natively by SwiftUI.
