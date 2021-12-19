@@ -28,7 +28,7 @@ open class UIRoutingNavigationController: UINavigationController, AnyRoutingView
 
     open override func viewDidLoad() {
         super.viewDidLoad()
-        // Config to match SwiftUI NavigationView behaviour
+        // Config to match SwiftUI default NavigationView behaviour
         navigationBar.prefersLargeTitles = true
     }
     

@@ -22,5 +22,5 @@
 
 import Foundation
 
-/// A type that can uniquely represent a navigatable route
+/// A type that can uniquely represent a navigatable route.
 public protocol RouteRepresenting: Hashable {}

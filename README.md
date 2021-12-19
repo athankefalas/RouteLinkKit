@@ -3,8 +3,6 @@
 A lightweight iOS mini framework that enables programmatic navigation with SwiftUI. 
 RouteLinkKit is fully compatible with native NavigationLinks, while also supporting features available when using UINavigationController.
 
-[TOC]
-
 ## ⏱ Version History
 
 | Version | Changes                |
@@ -54,6 +52,7 @@ This section will contain an example setup, for a app that displays a list of pr
 A route is a type that can represent the routes available in a specific navigation hierarchy. Each route must be uniquely identifiable by it's hash value.
 To define a route you can create an `enum`, `struct` or `class` and conform to the `RouteRepresenting` protocol. In the context of the test products app we may define the available routes as the `enum` below:
 
+
 ```swift
 enum ProductRoutes: RouteRepresenting {
     case productsList
@@ -93,6 +92,7 @@ class ProductsViewComposer: ViewComposer {
 
 A router is a type that can be used to manage and perform programmatic navigation. The router holds a reference to the UIKit navigation controller that is currently in use and the view composer for the navigation hierarchy it manages. Finally, a router also contains a property that defines it's root route. The type of the root route is assumed to be the base type used for all routes in the navigation hierarchy and must conform to the `RouteRepresenting` route.
 
+
 ``` swift
 class ProductsRouter: Router {
     let navigationController = UIRoutingNavigationController()
@@ -101,9 +101,11 @@ class ProductsRouter: Router {
     let rootRoute = ProductRoutes.productsList
 }
 ```
+
 #### 3.1 Injecting Routers in Views
 
 The router is also injected in the environment values of all views that are descendants of a `RoutedNavigationView` and can be used in the following way:
+
 
 ```swift
 
@@ -154,13 +156,13 @@ As mentioned above routers came with common navigation functions built-in, even 
 
 
 
-
 ### 4. Replace NavigationView with RoutedNavigationView 
 
 One of the two SwiftUI components of RouteLinkKit is `RoutedNavigationView` that simply replaces the native NavigationView
 with a custom implementation that uses a `UINavigationController` subclass for navigation and to provide the navigation bar.
 The `RoutedNavigationView` behaves the same as the native `NavigationView` and can even perform native navigation links if needed.
 The main difference is that the content of a routed navigation view is automatically created by the router.
+
 
 ```swift
 struct TestProductsApp: App {
@@ -186,6 +188,7 @@ In cases where the destination of navigation links needs to be resolved dynamica
 use a `RouteLink` instead of a `NavigationLink`. For any dynamic route you require create the appropriate view in the view composer. The way 
 that `RouteLink` is implemented internally uses the native `NavigationLink` with the main difference between the two being that `RouteLink`
 doesn't require that the destination to be defined at compile time.
+
 
 ```swift
 struct ProductsView: View {

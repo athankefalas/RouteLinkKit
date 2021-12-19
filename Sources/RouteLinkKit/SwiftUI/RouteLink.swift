@@ -77,9 +77,9 @@ public struct RouteLink<Route: RouteRepresenting, Label: View>: View {
     }
 
     public var body: some View {
-        if let router = routing.router {
+        if let router = routing.router { // If a router exists in the environment,
             navigationLink(router)
-        } else {
+        } else { // no router was found, return a disabled navigation link
             fallbackView()
         }
     }

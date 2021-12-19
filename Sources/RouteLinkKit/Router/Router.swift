@@ -23,7 +23,7 @@
 import Foundation
 import UIKit
 
-/// A type that represents a functioning router with a root view
+/// A type that represents a functioning router with a root view.
 public protocol Router: AnyRouter {
     associatedtype Route: RouteRepresenting
     
@@ -46,7 +46,7 @@ public extension Router {
     /// - Parameters:
     ///   - route: The route which will be displayed as the new top of the current navigation stack
     ///   - animated: Transtion animation flag
-    func dismiss(to route: Route, animated: Bool) {
+    func dismiss(to route: Route, animated: Bool = true) {
         let viewControllers = navigationController.viewControllers
         let viewControllersReversedIndices = viewControllers.indices.reversed()
         
@@ -65,7 +65,7 @@ public extension Router {
     /// - Parameters:
     ///   - route: The route which will be displayed as the new top of the current navigation stack
     ///   - animated: Transtion animation flag
-    func dismiss(before route: Route, animated: Bool) {
+    func dismiss(before route: Route, animated: Bool = true) {
         let viewControllers = navigationController.viewControllers
         let viewControllersReversedIndices = viewControllers.indices.reversed()
         
@@ -88,23 +88,23 @@ public extension Router {
         }
     }
     
-    func dismissToRoot(animated: Bool) {
+    func dismissToRoot(animated: Bool = true) {
         navigationController.popToRootViewController(animated: animated)
     }
     
-    /// Shows a new view for the specified route at the top of the current navigation stack
+    /// Shows a new view for the specified route at the top of the current navigation stack.
     /// - Parameters:
-    ///   - route: The route for which to create and show a view for
-    ///   - animated: Transtion animation flag
+    ///   - route: The route for which to create and show a view for.
+    ///   - animated: Transtion animation flag.
     func show(route: Route, animated: Bool = true) {
         let viewController = viewController(for: route)
         navigationController.pushViewController(viewController, animated: true)
     }
     
-    /// Presents a new view modally for the specified route at the top of the current navigation stack
+    /// Presents a new view modally for the specified route at the top of the current navigation stack.
     /// - Parameters:
-    ///   - route: The route for which to create and show a view for
-    ///   - animated: Transtion animation flag
+    ///   - route: The route for which to create and show a view for.
+    ///   - animated: Transtion animation flag.
     func present(route: Route, animated: Bool = true) {
         let viewController = viewController(for: route)
         navigationController.present(viewController, animated: true)
@@ -115,8 +115,8 @@ public extension Router {
     /// in the current trail. This method can also be used to respond to observed
     /// changes of a `trail` published value to statefully manage the current navigation trail.
     /// - Parameters:
-    ///   - route: The route for which to create and show a view for
-    ///   - animated: Transtion animation flag
+    ///   - route: The route for which to create and show a view for.
+    ///   - animated: Transtion animation flag.
     func show(trail path: [Route], animated: Bool = true) {
         let existingViewControllers = navigationController.viewControllers
         var viewControllers: [UIViewController] = []

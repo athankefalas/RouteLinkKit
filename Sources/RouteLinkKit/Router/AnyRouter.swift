@@ -22,10 +22,10 @@
 
 import Foundation
 
-/// A type that represents a basic router
+/// A type that represents a basic router.
 public protocol AnyRouter: Routing {
     
-    /// A UIKit based navigation controller used to navigate between views
+    /// A UIKit based navigation controller used to navigate between views.
     var navigationController: UIRoutingNavigationController { get }
     
     /// A view composer that is used to compose the appropriate SwiftUI.View

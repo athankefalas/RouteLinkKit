@@ -40,6 +40,7 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
                 return
             }
             
+            // Configure the obtained UIRoutingNavigationController reference with the root view controller
             let rootRoute = router.rootRoute
             let rootRouteView = router.routeViewComposer.composeView(for: rootRoute)
             let rootViewController = UIRoutingHostingController(presenting: rootRoute, content: rootRouteView)
@@ -48,6 +49,7 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
         }
         
         func makeUIViewController(context: Context) -> UIRoutingNavigationController {
+            // Return an already configured UIRoutingNavigationController reference
             return navigationController
         }
         
