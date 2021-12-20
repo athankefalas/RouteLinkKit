@@ -15,7 +15,6 @@ RouteLinkKit is fully compatible with native NavigationLinks, while also support
 RouteLinkKit has the following features:
 * Supports vanilla SwiftUI lifecycle apps.
 * Supports native NavigationLinks and state driven navigation.
-* Supports automatic master-detail and sidebar setup done by SwiftUI.
 * Supports mixing declarative and programmatic (imperative) navigation schemes.
 * Uses UIKit based navigation, and exposes the navigation controller in use.
 
