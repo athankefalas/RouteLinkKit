@@ -7,7 +7,7 @@ RouteLinkKit is fully compatible with native NavigationLinks, while also support
 
 | Version | Changes                  |
 |---------|--------------------------|
-| 0.8     | Initial release.         |
+| 0.8     | Pre-release.             |
 
 
 ## 🛠 Features
@@ -15,18 +15,19 @@ RouteLinkKit is fully compatible with native NavigationLinks, while also support
 RouteLinkKit has the following features:
 * Supports vanilla SwiftUI lifecycle apps.
 * Supports native NavigationLinks and state driven navigation.
-* Supports automatic master-detail and sidebar setup done by SwiftUI.
 * Supports mixing declarative and programmatic (imperative) navigation schemes.
 * Uses UIKit based navigation, and exposes the navigation controller in use.
 
 **Limitations:**
-* Uses UIKit based navigation, which limits any product to work only on platforms that support UIKit.
+* Supports stacked navigation only. Not compatible with SwiftUI automatic sidebar and master-detail navigation configuration.
+* Uses UIKit based navigation, which limits any products to work only on platforms that support UIKit.
 * Minor set up and configuration may be required.
-* All routes managed by a specific must be of the same type. 
+* All routes managed by a specific router must be of the same base type.
+* Limited testing capability due to the fact that internally it uses native NavigationLink views.
 
 ### ❗️Disclaimer
 
-This mini framework is simply a proof of concept, and has only been tested with iOS and iPadOS, using the SwiftUI App lifecycle.
+This mini framework started as a proof of concept, and has only been tested with iOS and iPadOS, using the SwiftUI App lifecycle.
 As a result, it is provided as is and without ANY warranty of any kind.
 If you plan to use this framework, especially in producion code, please do a round of testing before commiting to it.
 

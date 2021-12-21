@@ -14,20 +14,24 @@
 // limitations under the License.
 
 //
-//  ViewComposer.swift
+//  RoutedContent.swift
 //  
 //
-//  Created by Athanasios Kefalas on 18/12/21.
+//  Created by Athanasios Kefalas on 21/12/21.
 //
 
 import Foundation
+import UIKit
 import SwiftUI
 
-/// A type that can compose instances of SwiftUI.View dynamically for a given route.
-public protocol ViewComposer: AnyObject {
+/// A container of a SwiftUI view used for route view composition.
+public struct RoutedContent {
     
-    /// Creates a type erased SwiftUI.View for the given route.
-    /// - Parameter route: The route for which a new view needs to be composed.
-    /// - Returns: A RoutedContent instance that contains a type erased view that visually represents the given route.
-    func composeView<Route: RouteRepresenting>(for route: Route) -> RoutedContent
+    let contentView: () -> AnyView
+    
+    public init<SomeView: View>(@ViewBuilder _ contentView: @escaping () -> SomeView) {
+        self.contentView = {
+            AnyView(erasing: contentView())
+        }
+    }
 }

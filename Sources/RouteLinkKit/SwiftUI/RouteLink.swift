@@ -40,7 +40,8 @@ public struct RouteLink<Route: RouteRepresenting, Label: View>: View {
         self.label = label
         self.navigationLink = { router in
             NavigationLink(destination: {
-                router.routeViewComposer.composeView(for: route)
+                let routeContent = router.routeViewComposer.composeView(for: route)
+                routeContent.contentView()
             }, label: label)
         }
     }
@@ -55,7 +56,8 @@ public struct RouteLink<Route: RouteRepresenting, Label: View>: View {
         self.label = label
         self.navigationLink = { router in
             NavigationLink(isActive: isActive, destination: {
-                router.routeViewComposer.composeView(for: route)
+                let routeContent = router.routeViewComposer.composeView(for: route)
+                routeContent.contentView()
             }, label: label)
         }
     }
@@ -71,7 +73,8 @@ public struct RouteLink<Route: RouteRepresenting, Label: View>: View {
         self.label = label
         self.navigationLink = { router in
             NavigationLink(tag: tag, selection: selection, destination: {
-                router.routeViewComposer.composeView(for: route)
+                let routeContent = router.routeViewComposer.composeView(for: route)
+                routeContent.contentView()
             }, label: label)
         }
     }

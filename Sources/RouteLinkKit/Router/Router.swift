@@ -34,7 +34,7 @@ public protocol Router: AnyRouter {
 public extension Router {
     
     func restart(animated: Bool = true) {
-        let rootViewController = viewController(for: rootRoute)
+        let rootViewController = buildViewController(for: rootRoute)
         navigationController.setViewControllers([rootViewController], animated: animated)
     }
     
@@ -53,7 +53,7 @@ public extension Router {
         for index in viewControllersReversedIndices {
             let viewController = viewControllers[index]
             
-            if let routableViewController = viewController as? AnyRoutingViewController,
+            if let routableViewController = viewController as? AnyRoutingController,
                routableViewController.isPresenting(route: route) {
                 navigationController.popToViewController(viewController, animated: animated)
                 return
@@ -72,7 +72,7 @@ public extension Router {
         for index in viewControllersReversedIndices {
             let viewController = viewControllers[index]
             
-            if let routableViewController = viewController as? AnyRoutingViewController,
+            if let routableViewController = viewController as? AnyRoutingController,
                routableViewController.isPresenting(route: route) {
                 
                 let previousViewControllerIndex = viewControllers.index(before: index)
@@ -97,7 +97,7 @@ public extension Router {
     ///   - route: The route for which to create and show a view for.
     ///   - animated: Transtion animation flag.
     func show(route: Route, animated: Bool = true) {
-        let viewController = viewController(for: route)
+        let viewController = buildViewController(for: route)
         navigationController.pushViewController(viewController, animated: true)
     }
     
@@ -106,7 +106,7 @@ public extension Router {
     ///   - route: The route for which to create and show a view for.
     ///   - animated: Transtion animation flag.
     func present(route: Route, animated: Bool = true) {
-        let viewController = viewController(for: route)
+        let viewController = buildViewController(for: route)
         navigationController.present(viewController, animated: true)
     }
     
@@ -130,7 +130,7 @@ public extension Router {
                   isIndexValidInExistingViewControllers,
                   isRoute(route, presentedBy: existingViewControllers[index]) else {
                       
-                      let viewController = viewController(for: route)
+                      let viewController = buildViewController(for: route)
                       viewControllers.append(viewController)
                       
                       createNewViewControllers = true
@@ -150,15 +150,14 @@ public extension Router {
     }
     
     private func isRoute(_ route: Route, presentedBy viewController: UIViewController) -> Bool {
-        guard let routingViewController = viewController as? AnyRoutingViewController else {
+        guard let routingViewController = viewController as? AnyRoutingController else {
             return false
         }
         
         return routingViewController.isPresenting(route: route)
     }
     
-    private func viewController(for route: Route) -> UIViewController {
-        let routeView = routeViewComposer.composeView(for: route)
-        return UIRoutingHostingController(presenting: route, content: routeView)
+    private func buildViewController(for route: Route) -> UIViewController {
+        return ViewControllerBuilder.defaultBuilder.buildViewController(for: route, of: self)
     }
 }
