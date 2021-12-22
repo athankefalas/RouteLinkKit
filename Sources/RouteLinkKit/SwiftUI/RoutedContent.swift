@@ -29,6 +29,15 @@ public struct RoutedContent {
     
     let contentView: () -> AnyView
     
+    /// Creates a new instance with an empty content view
+    public init() {
+        self.contentView = {
+            AnyView(erasing: EmptyView())
+        }
+    }
+    
+    /// Creates a new instance with the specified content view
+    /// - Parameter contentView: A function that returns the content view of this RoutedContent instance
     public init<SomeView: View>(@ViewBuilder _ contentView: @escaping () -> SomeView) {
         self.contentView = {
             AnyView(erasing: contentView())
