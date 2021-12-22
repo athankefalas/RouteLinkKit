@@ -14,16 +14,20 @@
 // limitations under the License.
 
 //
-//  AnyRoutingViewController.swift
+//  AnyRoutingController.swift
 //  
 //
 //  Created by Athanasios Kefalas on 18/12/21.
 //
 
 import Foundation
+import UIKit
 
-/// A type representing a view controller that can present a route.
-public protocol AnyRoutingViewController: AnyObject {
+/// A type representing a UIViewController that can present a route.
+public typealias AnyRoutingUIViewController = UIViewController & AnyRoutingController
+
+/// A type representing a controller that can present a route.
+public protocol AnyRoutingController: AnyObject {
     
     /// Returns whether or not this view controller instance  is currently presenting the specified route.
     /// - Returns: Whether or not the specified route is being presented

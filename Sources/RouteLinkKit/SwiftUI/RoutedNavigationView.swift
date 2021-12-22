@@ -29,27 +29,25 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
     
     private struct UIKitRoutedContent: UIViewControllerRepresentable {
         
+        private let router: Router
         private let navigationController: UIRoutingNavigationController
         
         init(router: Router) {
+            self.router = router
             self.navigationController = router.navigationController
-            
-            guard router.navigationController.viewControllers.isEmpty else {
-                // The navigation controller was already set up, meaning this
-                // is just a state refresh so return
-                return
-            }
-            
-            // Configure the obtained UIRoutingNavigationController reference with the root view controller
-            let rootRoute = router.rootRoute
-            let rootRouteView = router.routeViewComposer.composeView(for: rootRoute)
-            let rootViewController = UIRoutingHostingController(presenting: rootRoute, content: rootRouteView)
-            
-            self.navigationController.viewControllers = [rootViewController]
         }
         
         func makeUIViewController(context: Context) -> UIRoutingNavigationController {
-            // Return an already configured UIRoutingNavigationController reference
+            guard router.navigationController.viewControllers.isEmpty else {
+                // The navigation controller was already set up, so return
+                return navigationController
+            }
+            
+            // Configure the UIRoutingNavigationController reference with the root view controller
+            let rootViewController = ViewControllerBuilder.defaultBuilder.buildViewController(forRootRouteOf: router)
+            navigationController.viewControllers = [rootViewController]
+            
+            // Return the configured UIRoutingNavigationController reference
             return navigationController
         }
         

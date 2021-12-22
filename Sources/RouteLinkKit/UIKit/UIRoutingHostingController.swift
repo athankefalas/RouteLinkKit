@@ -24,7 +24,7 @@ import Foundation
 import SwiftUI
 
 /// A UIKit view controller that supports routing and presents a specified SwiftUI.View as it's content.
-open class UIRoutingHostingController<RootView: View, Route: Hashable>: UIHostingController<RootView>, AnyRoutingViewController {
+open class UIRoutingHostingController<RootView: View, Route: Hashable>: UIHostingController<RootView>, AnyRoutingController {
     
     /// The route this view controller is presenting
     public var route: Route!

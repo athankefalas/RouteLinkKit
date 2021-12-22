@@ -24,7 +24,7 @@ import Foundation
 import UIKit
 
 /// A subclass of UINavigationController used specifically to display routed SwiftUI views.
-open class UIRoutingNavigationController: UINavigationController, AnyRoutingViewController {
+open class UIRoutingNavigationController: UINavigationController, AnyRoutingController {
 
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,7 +54,7 @@ open class UIRoutingNavigationController: UINavigationController, AnyRoutingView
     public func isPresenting<SomeRoute>(route: SomeRoute) -> Bool where SomeRoute : RouteRepresenting {
         // The route this view controller is presenting is equal to the one
         // presented by the top view controller
-        guard let topViewController = viewControllers.last as? AnyRoutingViewController else {
+        guard let topViewController = viewControllers.last as? AnyRoutingController else {
             return false
         }
         

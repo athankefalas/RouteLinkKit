@@ -28,6 +28,6 @@ public protocol ViewComposer: AnyObject {
     
     /// Creates a type erased SwiftUI.View for the given route.
     /// - Parameter route: The route for which a new view needs to be composed.
-    /// - Returns: A type erased view that visually represents the given route.
-    func composeView<Route: RouteRepresenting>(for route: Route) -> AnyView
+    /// - Returns: A RoutedContent instance that contains a type erased view that visually represents the given route.
+    func composeView<Route: RouteRepresenting>(for route: Route) -> RoutedContent
 }

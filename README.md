@@ -8,7 +8,7 @@ RouteLinkKit is fully compatible with native NavigationLinks, while also support
 | Version | Changes                  |
 |---------|--------------------------|
 | 0.8     | Pre-release.             |
-
+| 1.0.0.  | Initial Release.         |
 
 ## 🛠 Features
 
@@ -19,6 +19,7 @@ RouteLinkKit has the following features:
 * Uses UIKit based navigation, and exposes the navigation controller in use.
 
 **Limitations:**
+* Supports stacked navigation only. Not compatible with SwiftUI automatic sidebar and master-detail navigation configuration.
 * Uses UIKit based navigation, which limits any products to work only on platforms that support UIKit.
 * Minor set up and configuration may be required.
 * All routes managed by a specific router must be of the same base type.
@@ -70,19 +71,25 @@ A view composer is a type that accepts a route and composes a view to visually r
 ```swift
 class ProductsViewComposer: ViewComposer {
     
-    func composeView<Route>(for route: Route) -> AnyView where Route : RouteRepresenting {
+    func composeView<Route>(for route: Route) -> RoutedContent where Route : RouteRepresenting {
         guard let productsRoute = route as? ProductRoutes else {
             assertionFailure("ProductsViewComposer: Failed to compose a view for route '\(route)' of type '\(type(of: route))'.")
-            return AnyView( EmptyView() )
+            return RoutedContent()
         }
         
         switch route {
         case .productsList:
-            return AnyView( ProductsView() )
+            return RoutedContent {
+                ProductsView()
+            }
         case .selectedProduct(productId: let productId):
-            return AnyView( ProductDetailsView(productId: productId) )
+            return RoutedContent {
+                ProductDetailsView(productId: productId)
+            }
         case .viewingProductDescription(productId: let productId):
-            return AnyView( ProductDescriptionView(productId: productId) )
+            return RoutedContent {
+                ProductDescriptionView(productId: productId)
+            }
         }
     }
 }
@@ -220,9 +227,20 @@ struct ProductsView: View {
 
 ## 🧩 Extension Points
 
-The RouteLinkKit framework offers a possible extension point, that can help to modify the behaviour of the underlying UIKit UINavigationController. 
-The class used in RouteLinkKit is a subclass of UINavigationController, specifically configured to be used with SwiftUI called `UIRoutingNavigationController` and
-it's default behaviour can be easily modified by subclassing.
+The RouteLinkKit mini framework offers a couple possible extension points, that can help to extend and modify the behaviour of the framework.
 
-If more custom behaviour is required you can duplicate and modify the RoutedNavigationLink and RouteLink views, which by default only provide the 
-functionality provided natively by SwiftUI.
+### UIRoutingNavigationController
+
+An extension point is the navigation controller instance used by the routers. The specific class used in RouteLinkKit is a subclass of `UINavigationController`, 
+that is specifically configured to be used with SwiftUI, called `UIRoutingNavigationController`. If you wish to customize the appearance of the navigation bar, 
+or perform any other customizations which are only available in UIKit, you can subclass the `UIRoutingNavigationController` and provide your custom 
+implementation or add a navigation controller delegate. The only caveat is that in case of any method overrides you should invoke the superclass implementation
+if needed.
+
+### ViewControllerBuilder
+
+A second extension point exists and allows for custom behaviour in the creation of the routing UIViewControllers that host the SwiftUI views of routes.
+The default view controller creation strategy is implemented in the `ViewControllerBuilder` class, which simple creates a `UIRoutingHostingController`
+with the a composed view. The default instance of `ViewControllerBuilder` is allocated and retained in a static property of the class called defaultBuilder. 
+If you want to manually manage the creation of routing view controllers, you can set this property to a subclass of `ViewControllerBuilder` or a type that 
+conforms to the `AnyViewControllerBuilder` protocol.
