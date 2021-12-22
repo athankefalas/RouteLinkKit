@@ -8,7 +8,7 @@ RouteLinkKit is fully compatible with native NavigationLinks, while also support
 | Version | Changes                  |
 |---------|--------------------------|
 | 0.8     | Pre-release.             |
-
+| 1.0.0.  | Initial Release.         |
 
 ## 🛠 Features
 
