@@ -8,7 +8,7 @@ RouteLinkKit is fully compatible with native NavigationLinks, while also support
 | Version | Changes                  |
 |---------|--------------------------|
 | 0.8     | Pre-release.             |
-| 1.0.0.  | Initial Release.         |
+| 1.0.0   | Initial Release.         |
 
 ## 🛠 Features
 
@@ -50,7 +50,7 @@ This section will contain an example setup, for a app that displays a list of pr
 
 ### 1. Define a set of Routes
 
-A route is a type that can represent the routes available in a specific navigation hierarchy. Each route must be uniquely identifiable by it's hash value.
+A route is a type that can represent the routes available in a specific navigation hierarchy. Each route must be uniquely identifiable by its hash value.
 To define a route you can create an `enum`, `struct` or `class` and conform to the `RouteRepresenting` protocol. In the context of the test products app we may define the available routes as the `enum` below:
 
 
@@ -65,7 +65,7 @@ enum ProductRoutes: RouteRepresenting {
 
 ### 2. Define a ViewComposer
 
-A view composer is a type that accepts a route and composes a view to visually represent that specific route. The view composer must know how to compose and create new views for each of the routes it supports. To define a view composer create a `class` and conform to the `ViewComposer` protocol. The only requirement of the protocol is to define a function that accpets a generic route and returns a type-erased view. If you want to dynamically compose views at runtime based onthe current context of your app you may do it in the view composer.
+A view composer is a type that accepts a route and composes a view to visually represent that specific route. The view composer must know how to compose and create new views for each of the routes it supports. To define a view composer create a `class` and conform to the `ViewComposer` protocol. The only requirement of the protocol, is to define a function that accepts a generic route and returns a view wrapped in a `RoutedContent` type. The `RoutedContent` wrapper accepts a view builder function, that returns the view content for the specified route. If you want to dynamically compose views at runtime, based on the current context of your app, you may do it in the view composer.
 
 
 ```swift
@@ -97,7 +97,7 @@ class ProductsViewComposer: ViewComposer {
 
 ### 3. Create a router
 
-A router is a type that can be used to manage and perform programmatic navigation. The router holds a reference to the UIKit navigation controller that is currently in use and the view composer for the navigation hierarchy it manages. Finally, a router also contains a property that defines it's root route. The type of the root route is assumed to be the base type used for all routes in the navigation hierarchy and must conform to the `RouteRepresenting` route.
+A router is a type that can be used to manage and perform programmatic navigation. The router holds a reference to the UIKit navigation controller that is currently in use and the view composer for the navigation hierarchy it manages. Finally, a router also contains a property that defines it's root route. The type of the root route, is assumed to be the base type used for all routes in the navigation hierarchy and must conform to the `RouteRepresenting` protocol.
 
 
 ``` swift
@@ -148,7 +148,7 @@ struct SomeView: View {
 
 #### 3.2 Router API
 
-As mentioned above routers came with common navigation functions built-in, even though you can still provide your own by extensions or by using the navigation controller instance if needed. The functions that are already implemented in routers are the following:
+As previously mentioned, routers came with some common navigation functions built-in, but you can still provide your own by extensions, or by using the navigation controller instance directly if needed. The functions that are already implemented in routers are the following:
 
 |                   Function                   |                       Description                     |
 |----------------------------------------------|-------------------------------------------------------|
@@ -165,7 +165,7 @@ As mentioned above routers came with common navigation functions built-in, even 
 
 ### 4. Replace NavigationView with RoutedNavigationView 
 
-One of the two SwiftUI components of RouteLinkKit is `RoutedNavigationView` that simply replaces the native NavigationView
+One of the two SwiftUI components of RouteLinkKit is `RoutedNavigationView` that simply replaces the native NavigationView,
 with a custom implementation that uses a `UINavigationController` subclass for navigation and to provide the navigation bar.
 The `RoutedNavigationView` behaves the same as the native `NavigationView` and can even perform native navigation links if needed.
 The main difference is that the content of a routed navigation view is automatically created by the router.
@@ -192,7 +192,7 @@ struct TestProductsApp: App {
  ### 5. Replace NavigationLink with RouteLink (Optional)
 
 In cases where the destination of navigation links needs to be resolved dynamically at runtime, based on the current context of your app,
-use a `RouteLink` instead of a `NavigationLink`. For any dynamic route you require create the appropriate view in the view composer. The way 
+use a `RouteLink` instead of a `NavigationLink`. For any dynamic route you require, create the appropriate view in the view composer. The way 
 that `RouteLink` is implemented internally uses the native `NavigationLink` with the main difference between the two being that `RouteLink`
 doesn't require that the destination to be defined at compile time.
 
@@ -234,13 +234,12 @@ The RouteLinkKit mini framework offers a couple possible extension points, that 
 An extension point is the navigation controller instance used by the routers. The specific class used in RouteLinkKit is a subclass of `UINavigationController`, 
 that is specifically configured to be used with SwiftUI, called `UIRoutingNavigationController`. If you wish to customize the appearance of the navigation bar, 
 or perform any other customizations which are only available in UIKit, you can subclass the `UIRoutingNavigationController` and provide your custom 
-implementation or add a navigation controller delegate. The only caveat is that in case of any method overrides you should invoke the superclass implementation
-if needed.
+implementation or even add a navigation controller delegate. The only caveat is that in case of any method overrides you should invoke the superclass implementation if needed.
 
 ### ViewControllerBuilder
 
 A second extension point exists and allows for custom behaviour in the creation of the routing UIViewControllers that host the SwiftUI views of routes.
 The default view controller creation strategy is implemented in the `ViewControllerBuilder` class, which simple creates a `UIRoutingHostingController`
-with the a composed view. The default instance of `ViewControllerBuilder` is allocated and retained in a static property of the class called defaultBuilder. 
+with the a composed view. The default instance of `ViewControllerBuilder` is created and retained in a static property of the class, called defaultBuilder. 
 If you want to manually manage the creation of routing view controllers, you can set this property to a subclass of `ViewControllerBuilder` or a type that 
 conforms to the `AnyViewControllerBuilder` protocol.
