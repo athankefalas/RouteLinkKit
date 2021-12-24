@@ -19,7 +19,7 @@ RouteLinkKit has the following features:
 * Uses UIKit based navigation, and exposes the navigation controller in use.
 
 **Limitations:**
-* Supports stacked navigation only. Not compatible with SwiftUI automatic sidebar and master-detail navigation configuration.
+* Supports stacked navigation only. Not directly compatible with SwiftUI automatic sidebar and master-detail navigation configuration.
 * Uses UIKit based navigation, which limits any products to work only on platforms that support UIKit.
 * Minor set up and configuration may be required.
 * All routes managed by a specific router must be of the same base type.
