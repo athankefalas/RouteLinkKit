@@ -77,17 +77,13 @@ class ProductsViewComposer: ViewComposer {
             return RoutedContent()
         }
         
-        switch route {
-        case .productsList:
-            return RoutedContent {
+        return RoutedContent {
+            switch productsRoute {
+            case .productsList:
                 ProductsView()
-            }
-        case .selectedProduct(productId: let productId):
-            return RoutedContent {
+            case .selectedProduct(productId: let productId):
                 ProductDetailsView(productId: productId)
-            }
-        case .viewingProductDescription(productId: let productId):
-            return RoutedContent {
+            case .viewingProductDescription(productId: let productId):
                 ProductDescriptionView(productId: productId)
             }
         }
