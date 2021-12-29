@@ -20,7 +20,7 @@ open class UIRoutingViewController<Route: RouteRepresenting>: UIViewController, 
     ///   - route: The route this view controller will present
     ///   - nibName: The name of the nib file to associate with the view controller. The nib file name should not contain any leading path information. If you specify nil, the nibName property is set to nil.
     ///   - bundle: The bundle in which to search for the nib file. This method looks for the nib file in the bundle's language-specific project directories first, followed by the Resources directory.
-    public init(route: Route, nibName: String?, bundle: Bundle?) {
+    public init(presenting route: Route, nibName: String?, bundle: Bundle?) {
         self.route = route
         super.init(nibName: nibName, bundle: bundle)
     }
