@@ -170,7 +170,8 @@ The main difference is that the content of a routed navigation view is automatic
 ```swift
 struct TestProductsApp: App {
     
-    @StateObject private var router = ProductsRouter()
+    /// The app model, which contains the router as a published property
+    @StateObject private var model = ProductsModel()
     
     var body: some Scene {
         WindowGroup {
@@ -179,7 +180,7 @@ struct TestProductsApp: App {
               ProductsView()
             }
             // With:
-            RoutedNavigationView(using: $router)
+            RoutedNavigationView(using: $model.router)
         }
     }
  }
