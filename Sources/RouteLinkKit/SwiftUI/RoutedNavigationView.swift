@@ -58,14 +58,14 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
     
     /// Creates a new routed navigation view
     /// - Parameter router: A binding to the router that will be used to manage this navigation hierarchy.
-    @available(*, deprecated, message: "Use init(using:) with a direct router reference instead")
+    @available(*, deprecated, message: "Use init(router:) with a direct router reference instead")
     public init(using router: Binding<Router>) {
         self.router = router.wrappedValue
     }
     
     /// Creates a new routed navigation view
     /// - Parameter router: The router that will be used to manage this navigation hierarchy.
-    public init(using router: Router) {
+    public init(router: Router) {
         self.router = router
     }
     
