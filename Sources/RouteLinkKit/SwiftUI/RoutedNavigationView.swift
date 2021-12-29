@@ -54,12 +54,19 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
         func updateUIViewController(_ uiViewController: UIRoutingNavigationController, context: Context) {}
     }
     
-    @Binding private var router: Router
+    private let router: Router
+    
+    /// Creates a new routed navigation view
+    /// - Parameter router: A binding to the router that will be used to manage this navigation hierarchy.
+    @available(*, deprecated, message: "Use init(using:) with a direct router reference instead")
+    public init(using router: Binding<Router>) {
+        self.router = router.wrappedValue
+    }
     
     /// Creates a new routed navigation view
     /// - Parameter router: The router that will be used to manage this navigation hierarchy.
-    public init(using router: Binding<Router>) {
-        self._router = router
+    public init(using router: Router) {
+        self.router = router
     }
     
     public var body: some View {
