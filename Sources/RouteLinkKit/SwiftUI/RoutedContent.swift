@@ -21,7 +21,6 @@
 //
 
 import Foundation
-import UIKit
 import SwiftUI
 
 /// A container of a SwiftUI view used for route view composition.
