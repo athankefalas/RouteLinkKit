@@ -27,6 +27,8 @@ import SwiftUI
 /// The underlying navigation is controlled by a UIKit navigation controller and managed by a router.
 public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
     
+    // MARK: UINavigationController Bridge via UIViewControllerRepresentable
+    
     private struct UIKitRoutedContent: UIViewControllerRepresentable {
         
         private let router: Router
@@ -53,6 +55,8 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
         
         func updateUIViewController(_ uiViewController: UIRoutingNavigationController, context: Context) {}
     }
+    
+    // MARK: Implementation
     
     private let router: Router
     
