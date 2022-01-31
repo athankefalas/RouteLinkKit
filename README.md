@@ -29,7 +29,7 @@ RouteLinkKit has the following features:
 
 This mini framework started as a proof of concept, and has only been tested with iOS and iPadOS, using the SwiftUI App lifecycle.
 As a result, it is provided as is and without ANY warranty of any kind.
-If you plan to use this framework, especially in producion code, please do a round of testing before commiting to it.
+If you plan to use this framework, especially in producion code, please do a round of testing before commiting to using it.
 
 
 ## 📦 Instalation
@@ -72,12 +72,7 @@ A view composer is a type that accepts a route and composes a view to visually r
 class ProductsViewComposer: ViewComposer {
     
     func composeView<Route>(for route: Route) -> RoutedContent where Route : RouteRepresenting {
-        guard let productsRoute = route as? ProductRoutes else {
-            assertionFailure("ProductsViewComposer: Failed to compose a view for route '\(route)' of type '\(type(of: route))'.")
-            return RoutedContent()
-        }
-        
-        return RoutedContent {
+        RoutedContent(of: route, as: ProductRoutes.self) { productsRoute in
             switch productsRoute {
             case .productsList:
                 ProductsView()
