@@ -27,6 +27,8 @@ import SwiftUI
 /// The underlying navigation is controlled by a UIKit navigation controller and managed by a router.
 public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
     
+    // MARK: UINavigationController Bridge via UIViewControllerRepresentable
+    
     private struct UIKitRoutedContent: UIViewControllerRepresentable {
         
         private let router: Router
@@ -54,12 +56,21 @@ public struct RoutedNavigationView<Router: RouteLinkKit.Router>: View {
         func updateUIViewController(_ uiViewController: UIRoutingNavigationController, context: Context) {}
     }
     
-    @Binding private var router: Router
+    // MARK: Implementation
+    
+    private let router: Router
+    
+    /// Creates a new routed navigation view
+    /// - Parameter router: A binding to the router that will be used to manage this navigation hierarchy.
+    @available(*, deprecated, message: "Use init(router:) with a direct router reference instead")
+    public init(using router: Binding<Router>) {
+        self.router = router.wrappedValue
+    }
     
     /// Creates a new routed navigation view
     /// - Parameter router: The router that will be used to manage this navigation hierarchy.
-    public init(using router: Binding<Router>) {
-        self._router = router
+    public init(router: Router) {
+        self.router = router
     }
     
     public var body: some View {

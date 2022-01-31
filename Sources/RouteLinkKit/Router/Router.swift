@@ -33,6 +33,8 @@ public protocol Router: AnyRouter {
 
 public extension Router {
     
+    // MARK: Common Navigation Functions
+    
     func restart(animated: Bool = true) {
         let rootViewController = buildViewController(for: rootRoute)
         navigationController.setViewControllers([rootViewController], animated: animated)
@@ -148,6 +150,8 @@ public extension Router {
         
         navigationController.setViewControllers(viewControllers, animated: animated)
     }
+    
+    // MARK: Helpers
     
     private func isRoute(_ route: Route, presentedBy viewController: UIViewController) -> Bool {
         guard let routingViewController = viewController as? AnyRoutingController else {

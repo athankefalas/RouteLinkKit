@@ -21,10 +21,10 @@
 //
 
 import Foundation
-import UIKit
 import SwiftUI
 
 /// A container of a SwiftUI view used for route view composition.
+/// This container can be used when returning `some View` from a `@ViewBuilder` is not possible.
 public struct RoutedContent {
     
     let contentView: () -> AnyView
@@ -41,6 +41,25 @@ public struct RoutedContent {
     public init<SomeView: View>(@ViewBuilder _ contentView: @escaping () -> SomeView) {
         self.contentView = {
             AnyView(erasing: contentView())
+        }
+    }
+    /// Creates a new instance with the specified content view by accepting a generic `Route` and converting it to a concrete `Route` type.
+    /// - Parameters:
+    ///    - route: A generic route instance
+    ///    - routeType: The type to attemp to convert route into
+    ///    - contentView: A function that accepts the converted `Route` and returns the content view of this RoutedContent instance
+    public init<AnyRoute: RouteRepresenting, Route: RouteRepresenting, SomeView: View>(of route: AnyRoute, as routeType: Route.Type = Route.self, @ViewBuilder _ contentView: @escaping (Route) -> SomeView) {
+        guard let route = route as? Route else {
+            assertionFailure("RouteLinkKit: Failed to convert route '\(route)' from type '\(type(of: route))' to type '\(routeType)'.")
+            self.contentView = {
+                AnyView(erasing: EmptyView())
+            }
+            
+            return
+        }
+        
+        self.contentView = {
+            AnyView(erasing: contentView(route))
         }
     }
 }
